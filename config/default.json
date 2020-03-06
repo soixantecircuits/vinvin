@@ -28,13 +28,18 @@
       "passwordField": "password"
     },
     "oauth": {
-      "redirect": "/",
+      "redirect": "http://localhost:8080/",
       "auth0": {
-        "key": "<auth0 oauth key>",
-        "secret": "<auth0 oauth secret>",
-        "subdomain": "<auth0 subdomain>"
+        "key": "*****Client ID******",
+        "secret": "****Client Secret*****",
+        "subdomain": "vinvin.eu"
       }
     }
+  },
+  "stripe": {
+    "secretKey": "sk_test_*******",
+    "redirect": "http://localhost:8080/",
+    "plan": "plan_********"
   },
   "nedb": "../data"
 }
