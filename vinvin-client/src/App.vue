@@ -29,16 +29,16 @@
           </v-btn>
         </template>
         <v-list>
-<v-list-item>
-  <v-list-item-action>
-    <v-icon>mdi-flag</v-icon>
-  </v-list-item-action>
-  <v-list-item-content>
-    <v-list-item-title>
-      Plan: {{ planName }}
-    </v-list-item-title>
-  </v-list-item-content>
-</v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-icon>mdi-flag</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Plan: {{ planName }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item
             @click="logout"
             >
@@ -107,6 +107,8 @@ export default {
         console.error(error)
       }
     })
+    this.$intercom.boot({})
+    this.$intercom.show()
   },
   methods: {
     login () {
@@ -119,6 +121,9 @@ export default {
       const session = await this.$store.dispatch('subscription/create', {})
       const stripe = await loadStripe('pk_test_*******')
       stripe.redirectToCheckout({ sessionId: session.id })
+    },
+    hit: function () {
+      this.$intercom.trackEvent('Hit button')
     }
   },
   computed: {
@@ -130,6 +135,13 @@ export default {
     },
     planName () {
       return _.get(this.user, 'stripe.subscriptions.data.0.plan.nickname', 'free')
+    }
+  },
+  watch: {
+    user () {
+      if (this.user) {
+        this.$intercom.update(this.user)
+      }
     }
   }
 }
