@@ -10,6 +10,7 @@
   "dependencies": {
     "@feathersjs/authentication-client": "^4.5.1",
     "@feathersjs/socketio-client": "^4.5.1",
+    "@stripe/stripe-js": "^1.0.2",
     "@vue/composition-api": "^0.4.0",
     "core-js": "^3.6.4",
     "feathers-hooks-common": "^5.0.2",

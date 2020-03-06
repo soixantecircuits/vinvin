@@ -4,12 +4,16 @@ const {
   hashPassword, protect
 } = require('@feathersjs/authentication-local').hooks
 
+const createStripeCustomer = require('../../hooks/create-stripe-customer')
+
+const populateStripeCustomer = require('../../hooks/populate-stripe-customer');
+
 module.exports = {
   before: {
     all: [],
     find: [authenticate('jwt')],
     get: [authenticate('jwt')],
-    create: [hashPassword('password')],
+    create: [hashPassword('password'), createStripeCustomer()],
     update: [hashPassword('password'), authenticate('jwt')],
     patch: [hashPassword('password'), authenticate('jwt')],
     remove: [authenticate('jwt')]
@@ -22,7 +26,7 @@ module.exports = {
       protect('password')
     ],
     find: [],
-    get: [],
+    get: [populateStripeCustomer()],
     create: [],
     update: [],
     patch: [],

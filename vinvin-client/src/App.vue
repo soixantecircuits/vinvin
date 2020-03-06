@@ -29,6 +29,16 @@
           </v-btn>
         </template>
         <v-list>
+<v-list-item>
+  <v-list-item-action>
+    <v-icon>mdi-flag</v-icon>
+  </v-list-item-action>
+  <v-list-item-content>
+    <v-list-item-title>
+      Plan: {{ planName }}
+    </v-list-item-title>
+  </v-list-item-content>
+</v-list-item>
           <v-list-item
             @click="logout"
             >
@@ -60,6 +70,19 @@
             @click="login"
             >Login
           </v-btn>
+          <v-btn
+            v-if="user && !hasPlan"
+            large
+            color="pink"
+            @click="checkout"
+            >Subscribe
+          </v-btn>
+          <v-btn
+            v-if="user && hasPlan"
+            large
+            @click="hit"
+            >Hit
+          </v-btn>
         </v-row>
       </v-container>
     </v-content>
@@ -68,6 +91,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { loadStripe } from '@stripe/stripe-js'
+import _ from 'lodash'
 
 export default {
   name: 'App',
@@ -89,12 +114,23 @@ export default {
     },
     logout () {
       this.$store.dispatch('auth/logout')
+    },
+    async checkout () {
+      const session = await this.$store.dispatch('subscription/create', {})
+      const stripe = await loadStripe('pk_test_*******')
+      stripe.redirectToCheckout({ sessionId: session.id })
     }
   },
   computed: {
     ...mapGetters('auth', [
       'user'
-    ])
+    ]),
+    hasPlan () {
+      return _.get(this.user, 'stripe.subscriptions.data.0.status') === 'active'
+    },
+    planName () {
+      return _.get(this.user, 'stripe.subscriptions.data.0.plan.nickname', 'free')
+    }
   }
 }
 </script>

@@ -17,6 +17,8 @@ const channels = require('./channels')
 
 const authentication = require('./authentication')
 
+const { Customer } = require('feathers-stripe')
+
 const app = express(feathers())
 
 // Load app configuration
@@ -27,6 +29,7 @@ app.use(cors())
 app.use(compress())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use('/stripe/customers', new Customer({ secretKey: app.get('stripe').secretKey }))
 app.use(favicon(path.join(app.get('public'), 'favicon.ico')))
 // Host the public folder
 app.use('/', express.static(app.get('public')))
